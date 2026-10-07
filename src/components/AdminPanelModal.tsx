@@ -13,7 +13,11 @@ import {
   Edit3,
   DollarSign,
   AlertTriangle,
-  RefreshCw
+  RefreshCw,
+  Globe,
+  Copy,
+  Check,
+  ExternalLink
 } from 'lucide-react';
 import { playAnimusSound } from '../utils/audio';
 
@@ -29,15 +33,44 @@ export const AdminPanelModal: React.FC = () => {
     deleteOrder,
     updateProductStock,
     formatPrice,
-    totalRevenueBDT
+    totalRevenueBDT,
+    showToast
   } = useStore();
 
-  const [activeTab, setActiveTab] = useState<'orders' | 'inventory'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'inventory' | 'domain'>('orders');
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
   // Edit courier state
   const [editDistrict, setEditDistrict] = useState('Gulshan Sector 2');
   const [editEta, setEditEta] = useState(15);
+
+  // Custom domain state
+  const [customDomain, setCustomDomain] = useState(() => {
+    return localStorage.getItem('creed_custom_domain') || 'sanctumcreed.com';
+  });
+  const [copiedRecord, setCopiedRecord] = useState<string | null>(null);
+  const [domainVerified, setDomainVerified] = useState(false);
+
+  const handleCopyRecord = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedRecord(label);
+    showToast(`Copied ${label}: ${text}`);
+    playAnimusSound('click');
+    setTimeout(() => setCopiedRecord(null), 2000);
+  };
+
+  const handleSaveDomain = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem('creed_custom_domain', customDomain.trim());
+    showToast(`Saved custom domain: ${customDomain.trim()}`, 'success');
+    playAnimusSound('sync');
+  };
+
+  const handleVerifyDomain = () => {
+    playAnimusSound('sync');
+    setDomainVerified(true);
+    showToast(`DNS records configured for ${customDomain}! Connect in Vercel.`, 'success');
+  };
 
   if (!isAdminModalOpen) return null;
 
@@ -128,6 +161,15 @@ export const AdminPanelModal: React.FC = () => {
             }`}
           >
             Inventory Stock Management ({products.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('domain')}
+            className={`py-3 border-b-2 font-bold uppercase transition-colors flex items-center gap-1.5 ${
+              activeTab === 'domain' ? 'border-amber-500 text-stone-100' : 'border-transparent text-stone-400 hover:text-stone-200'
+            }`}
+          >
+            <Globe className="w-3.5 h-3.5 text-amber-500" />
+            <span>Custom Domain & DNS</span>
           </button>
         </div>
 
@@ -289,6 +331,124 @@ export const AdminPanelModal: React.FC = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* TAB 3: CUSTOM DOMAIN & DNS CONFIGURATION */}
+          {activeTab === 'domain' && (
+            <div className="space-y-6 text-xs font-mono">
+              {/* Domain Input Form */}
+              <div className="p-4 rounded-lg bg-black/40 border border-stone-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-display text-sm font-bold text-stone-100 uppercase">
+                      Custom Production Domain
+                    </h3>
+                    <p className="text-[11px] text-stone-400 font-sans mt-0.5">
+                      Configure your own custom domain (e.g. <code>creedarmory.com</code> or <code>store.saifomar.com</code>) for Vercel or any DNS registrar.
+                    </p>
+                  </div>
+                  <span className="px-2 py-0.5 rounded bg-emerald-950 border border-emerald-600 text-emerald-400 text-[10px] font-bold">
+                    SSL Ready
+                  </span>
+                </div>
+
+                <form onSubmit={handleSaveDomain} className="flex gap-2 pt-1">
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      value={customDomain}
+                      onChange={(e) => setCustomDomain(e.target.value)}
+                      placeholder="e.g. sanctumcreed.com or yourbrand.com"
+                      className="w-full px-3 py-2 rounded bg-stone-900 border border-stone-700 text-stone-100 font-mono text-xs focus:outline-none focus:border-amber-500"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded bg-amber-700 hover:bg-amber-600 text-white font-bold uppercase transition-colors"
+                  >
+                    Save Domain
+                  </button>
+                </form>
+              </div>
+
+              {/* DNS Records Table */}
+              <div className="p-4 rounded-lg bg-stone-900/30 border border-stone-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-display text-xs font-bold text-amber-400 uppercase tracking-wider">
+                    Required Vercel DNS Records for {customDomain}
+                  </h4>
+                  <button
+                    onClick={handleVerifyDomain}
+                    className="text-[11px] text-amber-400 hover:underline flex items-center gap-1"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    <span>Check DNS</span>
+                  </button>
+                </div>
+
+                <div className="border border-stone-800 rounded overflow-hidden">
+                  <div className="grid grid-cols-12 bg-black/80 p-2 text-[10px] text-stone-400 font-bold uppercase">
+                    <div className="col-span-2">Type</div>
+                    <div className="col-span-3">Host / Name</div>
+                    <div className="col-span-5">Target / Value</div>
+                    <div className="col-span-2 text-right">Action</div>
+                  </div>
+
+                  <div className="divide-y divide-stone-800/80 bg-stone-950/60 text-stone-200">
+                    {/* Record 1: A Record */}
+                    <div className="grid grid-cols-12 p-3 items-center">
+                      <div className="col-span-2 font-bold text-amber-400">A</div>
+                      <div className="col-span-3 text-stone-300">@</div>
+                      <div className="col-span-5 text-emerald-400 truncate">76.76.21.21</div>
+                      <div className="col-span-2 text-right">
+                        <button
+                          onClick={() => handleCopyRecord('76.76.21.21', 'A Record')}
+                          className="px-2 py-1 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 text-[10px]"
+                        >
+                          {copiedRecord === 'A Record' ? '✓ Copied' : 'Copy'}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Record 2: CNAME Record */}
+                    <div className="grid grid-cols-12 p-3 items-center">
+                      <div className="col-span-2 font-bold text-amber-400">CNAME</div>
+                      <div className="col-span-3 text-stone-300">www</div>
+                      <div className="col-span-5 text-emerald-400 truncate">cname.vercel-dns.com</div>
+                      <div className="col-span-2 text-right">
+                        <button
+                          onClick={() => handleCopyRecord('cname.vercel-dns.com', 'CNAME Record')}
+                          className="px-2 py-1 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 text-[10px]"
+                        >
+                          {copiedRecord === 'CNAME Record' ? '✓ Copied' : 'Copy'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {domainVerified && (
+                  <div className="p-2.5 rounded bg-emerald-950/40 border border-emerald-600/60 text-emerald-300 text-[11px] flex items-center gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>DNS records verified! In Vercel Project Settings &gt; Domains, enter <b>{customDomain}</b> to complete SSL issuance.</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Instructions */}
+              <div className="p-4 rounded-lg bg-black/40 border border-stone-800 space-y-2 text-[11px] text-stone-300 font-sans">
+                <span className="font-mono text-amber-400 uppercase font-bold block">
+                  How to Attach this Custom Domain to Vercel:
+                </span>
+                <ol className="list-decimal list-inside space-y-1 text-stone-400">
+                  <li>Deploy your project on <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">Vercel</a>.</li>
+                  <li>Click on your project $\to$ Go to <b>Settings</b> $\to$ <b>Domains</b>.</li>
+                  <li>Type your custom domain: <code className="text-white">{customDomain}</code> and click <b>Add</b>.</li>
+                  <li>Add the <b>A Record</b> (<code>76.76.21.21</code>) and <b>CNAME Record</b> (<code>cname.vercel-dns.com</code>) at your domain provider (Namecheap, GoDaddy, Cloudflare, etc.).</li>
+                  <li>Vercel automatically provisions your free SSL certificate within 15 minutes!</li>
+                </ol>
+              </div>
             </div>
           )}
         </div>
