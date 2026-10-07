@@ -151,19 +151,6 @@ export const Footer: React.FC = () => {
                 Sanctuary Privacy Policy
               </button>
             </li>
-            <li>
-              <button
-                onClick={() => {
-                  playAnimusSound('blade');
-                  openAdminPortal();
-                }}
-                className="text-stone-500 hover:text-amber-400 flex items-center gap-1 font-mono pt-1 transition-colors"
-                title="Restricted Master Smith Portal"
-              >
-                <Lock className="w-3 h-3 text-stone-600" />
-                <span>Vault Master Access</span>
-              </button>
-            </li>
           </ul>
         </div>
 

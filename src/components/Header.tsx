@@ -156,7 +156,7 @@ export const Header: React.FC = () => {
             title="Assassin Sanctuary Dashboard"
           >
             <Shield className="w-3.5 h-3.5 text-amber-500" />
-            <span className="hidden sm:inline">{profile.rank.split(' ')[0]}</span>
+            <span className="hidden sm:inline">Sanctuary</span>
           </button>
 
           {/* Cart Bag button */}

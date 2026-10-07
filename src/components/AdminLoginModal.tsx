@@ -128,26 +128,11 @@ export const AdminLoginModal: React.FC = () => {
             </button>
           </form>
 
-          {/* Discreet Credentials Helper for the Owner */}
-          <div className="p-3 rounded bg-stone-950/80 border border-stone-800/80 space-y-2 text-[11px]">
-            <div className="flex items-center justify-between text-stone-400">
-              <span className="font-mono text-[10px] uppercase text-amber-400">Generated Vault Credentials:</span>
-              <button
-                type="button"
-                onClick={handleAutofillCredentials}
-                className="text-[10px] text-amber-400 hover:underline flex items-center gap-1 font-mono"
-              >
-                <Sparkles className="w-3 h-3" />
-                <span>Auto-fill</span>
-              </button>
-            </div>
-            <div className="font-mono text-stone-300 space-y-0.5 bg-black/60 p-2 rounded border border-stone-800/60">
-              <div>Login ID: <code className="text-amber-400 font-bold">mentor_saif</code></div>
-              <div>Password: <code className="text-amber-400 font-bold">CreedVault#2026@Masyaf</code></div>
-            </div>
-            <div className="text-[10px] text-stone-500 leading-tight">
-              Secret Shortcut: Press <code className="text-stone-400">Ctrl+Shift+A</code> anywhere or navigate to <code className="text-stone-400">#admin</code> to trigger this gate.
-            </div>
+          {/* Secure Council Notice */}
+          <div className="text-center pt-2 border-t border-stone-800/60">
+            <p className="text-[10px] text-stone-500 font-mono">
+              Authorized personnel only. All access attempts are cryptographically audited.
+            </p>
           </div>
         </div>
 
