@@ -23,12 +23,18 @@ interface StoreContextType {
   isHostingGuideOpen: boolean;
   isSupportOpen: boolean;
   isAdminModalOpen: boolean;
+  isAdminLoginOpen: boolean;
+  isAdminAuthenticated: boolean;
   activePolicyModal: PolicyType | null;
   invoiceOrder: Order | null;
   toast: { message: string; type: 'success' | 'info' | 'warn' } | null;
   // Admin Mode
   isAdminMode: boolean;
   toggleAdminMode: () => void;
+  openAdminPortal: () => void;
+  adminLogin: (id: string, pass: string) => boolean;
+  adminLogout: () => void;
+  setIsAdminLoginOpen: (b: boolean) => void;
   // Actions
   setCurrency: (c: 'BDT' | 'USD') => void;
   setSelectedCategory: (c: ProductCategory) => void;
@@ -313,12 +319,77 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isHostingGuideOpen, setIsHostingGuideOpen] = useState(false);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
+    return sessionStorage.getItem('creed_admin_auth') === 'true';
+  });
   const [activePolicyModal, setActivePolicyModal] = useState<PolicyType | null>(null);
   const [invoiceOrder, setInvoiceOrder] = useState<Order | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' | 'warn' } | null>(null);
 
-  // Admin Mode
+  // Admin Mode & Security Credentials
   const [isAdminMode, setIsAdminMode] = useState(false);
+
+  const ADMIN_CREDS = {
+    loginId: 'mentor_saif',
+    password: 'CreedVault#2026@Masyaf'
+  };
+
+  const openAdminPortal = () => {
+    if (isAdminAuthenticated) {
+      setIsAdminModalOpen(true);
+    } else {
+      setIsAdminLoginOpen(true);
+    }
+  };
+
+  const adminLogin = (id: string, pass: string): boolean => {
+    if (id.trim() === ADMIN_CREDS.loginId && pass === ADMIN_CREDS.password) {
+      setIsAdminAuthenticated(true);
+      sessionStorage.setItem('creed_admin_auth', 'true');
+      setIsAdminLoginOpen(false);
+      setIsAdminModalOpen(true);
+      playAnimusSound('success');
+      showToast('Master Smith Credentials Verified. Welcome, Mentor.', 'success');
+      return true;
+    }
+    playAnimusSound('click');
+    showToast('Access Denied: Invalid Master Smith Key or Password.', 'warn');
+    return false;
+  };
+
+  const adminLogout = () => {
+    setIsAdminAuthenticated(false);
+    sessionStorage.removeItem('creed_admin_auth');
+    setIsAdminModalOpen(false);
+    playAnimusSound('click');
+    showToast('Admin Vault Session Locked.', 'info');
+  };
+
+  // Listen for Ctrl+Shift+A or secret #admin hash
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+        e.preventDefault();
+        openAdminPortal();
+      }
+    };
+    const checkHash = () => {
+      if (window.location.hash === '#admin') {
+        openAdminPortal();
+        try {
+          window.history.replaceState(null, '', window.location.pathname);
+        } catch {}
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('hashchange', checkHash);
+    checkHash();
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('hashchange', checkHash);
+    };
+  }, [isAdminAuthenticated]);
 
   // Sync state to localStorage
   useEffect(() => {
@@ -661,6 +732,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         isHostingGuideOpen,
         isSupportOpen,
         isAdminModalOpen,
+        isAdminLoginOpen,
+        isAdminAuthenticated,
+        openAdminPortal,
+        adminLogin,
+        adminLogout,
+        setIsAdminLoginOpen,
         activePolicyModal,
         invoiceOrder,
         toast,

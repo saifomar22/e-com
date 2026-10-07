@@ -1,6 +1,6 @@
 import React from 'react';
 import { useStore } from '../context/StoreContext';
-import { Shield, Smartphone, Compass, Globe, Heart } from 'lucide-react';
+import { Shield, Smartphone, Compass, Globe, Heart, Lock } from 'lucide-react';
 import { playAnimusSound } from '../utils/audio';
 
 export const Footer: React.FC = () => {
@@ -10,7 +10,7 @@ export const Footer: React.FC = () => {
     setIsHostingGuideOpen,
     setIsDashboardOpen,
     setIsSupportOpen,
-    setIsAdminModalOpen,
+    openAdminPortal,
     setActivePolicyModal,
     setSelectedCategory
   } = useStore();
@@ -155,11 +155,13 @@ export const Footer: React.FC = () => {
               <button
                 onClick={() => {
                   playAnimusSound('blade');
-                  setIsAdminModalOpen(true);
+                  openAdminPortal();
                 }}
-                className="text-amber-400 hover:underline flex items-center gap-1 font-mono pt-1"
+                className="text-stone-500 hover:text-amber-400 flex items-center gap-1 font-mono pt-1 transition-colors"
+                title="Restricted Master Smith Portal"
               >
-                <span>Merchant Admin Console →</span>
+                <Lock className="w-3 h-3 text-stone-600" />
+                <span>Vault Master Access</span>
               </button>
             </li>
           </ul>

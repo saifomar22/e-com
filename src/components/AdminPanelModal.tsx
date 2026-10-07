@@ -34,6 +34,7 @@ export const AdminPanelModal: React.FC = () => {
     updateProductStock,
     formatPrice,
     totalRevenueBDT,
+    adminLogout,
     showToast
   } = useStore();
 
@@ -102,15 +103,24 @@ export const AdminPanelModal: React.FC = () => {
             </div>
           </div>
 
-          <button
-            onClick={() => {
-              playAnimusSound('click');
-              setIsAdminModalOpen(false);
-            }}
-            className="p-1.5 rounded hover:bg-stone-800 text-stone-400 hover:text-white"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={adminLogout}
+              className="px-2.5 py-1 rounded bg-stone-900 border border-stone-800 hover:border-red-600 text-stone-400 hover:text-red-400 text-xs font-mono font-medium transition-colors"
+              title="Lock Admin Vault Session"
+            >
+              Sign Out
+            </button>
+            <button
+              onClick={() => {
+                playAnimusSound('click');
+                setIsAdminModalOpen(false);
+              }}
+              className="p-1.5 rounded hover:bg-stone-800 text-stone-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Top KPI Metrics Bar */}

@@ -12,6 +12,7 @@ import { InvoiceModal } from './components/InvoiceModal';
 import { BkashInfoModal } from './components/BkashInfoModal';
 import { FreeHostingGuideModal } from './components/FreeHostingGuideModal';
 import { AdminPanelModal } from './components/AdminPanelModal';
+import { AdminLoginModal } from './components/AdminLoginModal';
 import { CommercialPoliciesModal } from './components/CommercialPoliciesModal';
 import { SupportDrawer } from './components/SupportDrawer';
 import { Toast } from './components/Toast';
@@ -157,6 +158,7 @@ function StorefrontContent() {
       <BkashInfoModal />
       <FreeHostingGuideModal />
       <AdminPanelModal />
+      <AdminLoginModal />
       <CommercialPoliciesModal />
       <SupportDrawer />
 

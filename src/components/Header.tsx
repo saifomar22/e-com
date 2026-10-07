@@ -14,7 +14,8 @@ export const Header: React.FC = () => {
     setIsDashboardOpen,
     setIsBkashGuideOpen,
     setIsSupportOpen,
-    setIsAdminModalOpen,
+    isAdminAuthenticated,
+    openAdminPortal,
     setSelectedCategory,
     setSearchQuery,
     profile
@@ -105,18 +106,20 @@ export const Header: React.FC = () => {
 
         {/* Zone 3: 1-2 primary action clusters */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Merchant Admin Console Button */}
-          <button
-            onClick={() => {
-              playAnimusSound('blade');
-              setIsAdminModalOpen(true);
-            }}
-            title="Merchant & Smithy Administration Console"
-            className="hidden lg:flex items-center gap-1 px-2 py-1 text-xs font-mono font-medium rounded border border-amber-800/80 bg-amber-950/30 text-amber-400 hover:bg-amber-900/40 transition-colors"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
-            Admin
-          </button>
+          {/* Authenticated Admin Badge (Only Visible When Logged In) */}
+          {isAdminAuthenticated && (
+            <button
+              onClick={() => {
+                playAnimusSound('blade');
+                openAdminPortal();
+              }}
+              title="Merchant & Smithy Administration Console"
+              className="flex items-center gap-1 px-2 py-1 text-xs font-mono font-medium rounded border border-amber-800/80 bg-amber-950/50 text-amber-300 hover:bg-amber-900/60 transition-colors"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Admin (Live)</span>
+            </button>
+          )}
 
           {/* bKash Pay Quick Button */}
           <button
