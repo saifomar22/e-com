@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* Custom dark moody scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #090a0d;
+}
+::-webkit-scrollbar-thumb {
+  background: #232733;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3b4254;
+}
+
+/* Animus grid texture overlay */
+.animus-grid-bg {
+  background-image: 
+    linear-gradient(rgba(192, 21, 37, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(192, 21, 37, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Eagle crest watermark / metallic sheen */
+.creed-sheen {
+  background: linear-gradient(135deg, rgba(201, 157, 66, 0.15) 0%, rgba(192, 21, 37, 0.1) 50%, transparent 100%);
+}
+
+.creed-border {
+  border: 1px solid rgba(201, 157, 66, 0.25);
+}
+
+.creed-border:hover {
+  border-color: rgba(201, 157, 66, 0.6);
+}

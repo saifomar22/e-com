@@ -1,0 +1,6 @@
+{
+  "name": "Sanctum of the Creed | Assassin Armory & Relics",
+  "description": "Dark moody e-commerce platform for authentic Assassin's Creed collectibles, blades, cloaks, and Isu relics with secure bKash mobile payment integration, real-time courier tracking, and Brotherhood dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
