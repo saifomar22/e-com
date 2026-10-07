@@ -180,10 +180,10 @@ export const CustomerDashboard: React.FC = () => {
                       </div>
 
                       <div className="mt-2 flex flex-wrap gap-2">
-                        {order.items.map((item, i) => (
+                        {(order.items || []).map((item, i) => (
                           <div key={i} className="flex items-center gap-1.5 text-xs text-stone-300 font-mono">
                             <span className="text-amber-500 font-bold">{item.quantity}x</span>
-                            <span>{item.product.name}</span>
+                            <span>{item.product?.name || 'Armory Artifact'}</span>
                           </div>
                         ))}
                       </div>

@@ -83,11 +83,11 @@ export const CartDrawer: React.FC = () => {
               </div>
             ) : (
               cart.map(item => (
-                <div key={item.product.id} className="py-4 first:pt-0 last:pb-0 flex gap-4 items-center">
+                <div key={item.product?.id || Math.random().toString()} className="py-4 first:pt-0 last:pb-0 flex gap-4 items-center">
                   <div className="w-16 h-16 rounded overflow-hidden bg-stone-950 border border-stone-800 shrink-0">
                     <img
-                      src={item.product.image}
-                      alt={item.product.name}
+                      src={item.product?.image}
+                      alt={item.product?.name || 'Armory Artifact'}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover object-center"
                     />
@@ -95,10 +95,10 @@ export const CartDrawer: React.FC = () => {
 
                   <div className="flex-1 min-w-0">
                     <h4 className="font-display text-xs font-semibold text-stone-200 truncate">
-                      {item.product.name}
+                      {item.product?.name || 'Armory Artifact'}
                     </h4>
                     <div className="text-[11px] font-mono tabular-nums text-amber-400 mt-0.5">
-                      {formatPrice(item.product.priceBDT)}
+                      {formatPrice(item.product?.priceBDT || 0)}
                     </div>
 
                     <div className="mt-2 flex items-center gap-2">

@@ -44,6 +44,33 @@ export const OrderTrackingView: React.FC = () => {
 
   const currentOrder = orders.find(o => o.id.toUpperCase() === searchOrderId.trim().toUpperCase()) || orders[0];
 
+  if (!currentOrder) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md overflow-y-auto animate-fadeIn">
+        <div className="relative w-full max-w-md bg-[#0a0c10] border border-stone-800 rounded-lg shadow-2xl text-stone-200 p-8 text-center space-y-4">
+          <div className="w-12 h-12 rounded-full border border-stone-800 flex items-center justify-center mx-auto text-amber-500">
+            <Compass className="w-6 h-6 animate-spin" />
+          </div>
+          <h3 className="font-display text-base font-bold text-stone-100 uppercase">
+            No Active Telemetry Found
+          </h3>
+          <p className="text-xs text-stone-400">
+            No active orders are currently tracked in the Brotherhood archives. Equip gear from the Armory to initialize courier GPS tracking.
+          </p>
+          <button
+            onClick={() => {
+              playAnimusSound('click');
+              setIsTrackingOpen(false);
+            }}
+            className="px-4 py-2 rounded bg-red-700 hover:bg-red-600 text-white text-xs font-semibold uppercase"
+          >
+            Close Tracking
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const stages: { key: OrderStatus; label: string; desc: string }[] = [
     { key: 'verifying_payment', label: 'bKash Verification', desc: 'Gateway confirmation' },
     { key: 'payment_confirmed', label: 'Payment Confirmed', desc: 'Cleared by merchant' },

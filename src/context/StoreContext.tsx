@@ -215,7 +215,20 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [products, setProducts] = useState<Product[]>(() => {
     try {
       const saved = localStorage.getItem('creed_products_commercial');
-      return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
+      if (!saved) return INITIAL_PRODUCTS;
+      const parsed: Product[] = JSON.parse(saved);
+      // Merge with INITIAL_PRODUCTS to guarantee new fields (sku, warranty, reviews) always exist
+      return INITIAL_PRODUCTS.map(initial => {
+        const found = parsed.find(p => p.id === initial.id);
+        if (!found) return initial;
+        return {
+          ...initial,
+          ...found,
+          stockCount: found.stockCount ?? initial.stockCount,
+          reviews: found.reviews && found.reviews.length > 0 ? found.reviews : initial.reviews,
+          specs: { ...initial.specs, ...(found.specs || {}) }
+        };
+      });
     } catch {
       return INITIAL_PRODUCTS;
     }
@@ -224,7 +237,15 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('creed_cart');
-      return saved ? JSON.parse(saved) : [{ product: INITIAL_PRODUCTS[0], quantity: 1 }];
+      if (!saved) return [{ product: INITIAL_PRODUCTS[0], quantity: 1 }];
+      const parsed: CartItem[] = JSON.parse(saved);
+      return parsed.map(item => {
+        const liveProd = INITIAL_PRODUCTS.find(p => p.id === item.product?.id) || item.product;
+        return {
+          ...item,
+          product: liveProd ? { ...liveProd, ...item.product } : INITIAL_PRODUCTS[0]
+        };
+      });
     } catch {
       return [{ product: INITIAL_PRODUCTS[0], quantity: 1 }];
     }

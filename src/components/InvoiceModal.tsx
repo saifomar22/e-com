@@ -104,12 +104,12 @@ export const InvoiceModal: React.FC = () => {
             </div>
 
             <div className="divide-y divide-stone-800/80 bg-stone-950/60">
-              {invoiceOrder.items.map((it, idx) => (
+              {(invoiceOrder.items || []).map((it, idx) => (
                 <div key={idx} className="grid grid-cols-12 p-2.5 text-stone-200 items-center">
-                  <div className="col-span-6 font-medium text-stone-100 truncate">{it.product.name}</div>
-                  <div className="col-span-2 text-center text-stone-400 text-[11px] truncate">{it.product.era.split(',')[0]}</div>
+                  <div className="col-span-6 font-medium text-stone-100 truncate">{it.product?.name || 'Armory Artifact'}</div>
+                  <div className="col-span-2 text-center text-stone-400 text-[11px] truncate">{(it.product?.era || 'Universal Era').split(',')[0]}</div>
                   <div className="col-span-2 text-center">{it.quantity}</div>
-                  <div className="col-span-2 text-right tabular-nums">{formatPrice(it.product.priceBDT * it.quantity)}</div>
+                  <div className="col-span-2 text-right tabular-nums">{formatPrice((it.product?.priceBDT || 0) * it.quantity)}</div>
                 </div>
               ))}
             </div>

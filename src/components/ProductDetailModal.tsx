@@ -60,7 +60,7 @@ export const ProductDetailModal: React.FC = () => {
                 className="w-full h-full object-cover object-center"
               />
               <span className="absolute top-3 left-3 px-2 py-0.5 rounded bg-black/80 border border-stone-800 text-[10px] font-mono text-amber-400 uppercase tracking-wider">
-                {selectedProduct.specs.rarity}
+                {selectedProduct.specs?.rarity || 'Masterwork'}
               </span>
             </div>
 
@@ -114,26 +114,26 @@ export const ProductDetailModal: React.FC = () => {
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="p-2 rounded bg-stone-900/60 border border-stone-800/60">
                     <span className="text-stone-500 block text-[10px] uppercase font-mono">Dimensions</span>
-                    <span className="text-stone-200 font-medium">{selectedProduct.specs.dimensions}</span>
+                    <span className="text-stone-200 font-medium">{selectedProduct.specs?.dimensions || 'Standard Armory Scale'}</span>
                   </div>
                   <div className="p-2 rounded bg-stone-900/60 border border-stone-800/60">
                     <span className="text-stone-500 block text-[10px] uppercase font-mono">Weight</span>
-                    <span className="text-stone-200 font-medium">{selectedProduct.specs.weight}</span>
+                    <span className="text-stone-200 font-medium">{selectedProduct.specs?.weight || 'Calibrated Forge Weight'}</span>
                   </div>
                   <div className="p-2 rounded bg-stone-900/60 border border-stone-800/60">
                     <span className="text-stone-500 block text-[10px] uppercase font-mono">SKU / Serial</span>
-                    <span className="text-amber-400 font-mono text-[11px] font-medium">{selectedProduct.sku}</span>
+                    <span className="text-amber-400 font-mono text-[11px] font-medium">{selectedProduct.sku || 'SANCTUM-SKU'}</span>
                   </div>
                   <div className="p-2 rounded bg-stone-900/60 border border-stone-800/60">
                     <span className="text-stone-500 block text-[10px] uppercase font-mono">Warranty</span>
-                    <span className="text-stone-200 font-medium text-[11px]">{selectedProduct.specs.warranty}</span>
+                    <span className="text-stone-200 font-medium text-[11px]">{selectedProduct.specs?.warranty || 'Guild 2-Year Guarantee'}</span>
                   </div>
                 </div>
 
                 <div className="mt-2">
                   <span className="text-stone-500 block text-[10px] uppercase font-mono mb-1">Materials</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {selectedProduct.materials.map((mat, i) => (
+                    {(selectedProduct.materials || []).map((mat, i) => (
                       <span
                         key={i}
                         className="px-2 py-0.5 text-[11px] rounded bg-stone-900 border border-stone-800 text-stone-300"

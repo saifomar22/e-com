@@ -57,7 +57,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
           {/* Subtle Era / Rarity label */}
           <span className="pointer-events-auto px-2 py-0.5 rounded bg-black/75 backdrop-blur-sm border border-stone-800 text-[10px] font-mono tracking-wide text-amber-400 uppercase">
-            {product.specs.rarity}
+            {product.specs?.rarity || 'Masterwork'}
           </span>
 
           {/* Wishlist Button */}
