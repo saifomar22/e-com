@@ -5,6 +5,7 @@ export const HERO_IMAGE = '/src/assets/images/ac_hero_sanctum_1791361831100.jpg'
 export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'prod-hidden-blade',
+    sku: 'SANCTUM-BLD-001',
     name: 'Dual-Action Phantom Hidden Blade',
     category: 'blades',
     priceBDT: 8500,
@@ -15,19 +16,42 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockCount: 14,
     image: '/src/assets/images/ac_hidden_blade_replica_1791361850702.jpg',
     era: 'Italian Renaissance, 1500',
-    description: 'Masterwork spring-loaded hidden blade mechanism housed within an embossed full-grain Italian leather bracer. Features dual-action ring pull trigger for seamless extension and stealth retraction.',
+    description: 'Masterwork spring-loaded mechanical hidden blade mechanism housed within an embossed full-grain Italian leather bracer. Features dual-action ring pull trigger for seamless extension and stealth retraction.',
     materials: ['Damascus Carbon Steel', 'Vegetable-Tanned Italian Leather', 'Silver Filigree Rivets', 'Internal Spring Coil'],
     specs: {
       dimensions: 'Blade: 21 cm / Bracer: 28 cm',
       weight: '640 g',
       craftsmanship: 'Hand-assembled in Venice Armory guild',
-      rarity: 'Legendary'
+      rarity: 'Legendary',
+      serialPrefix: 'AC-ITA-1500',
+      warranty: '2-Year Smithy Guarantee & Spring Replacement'
     },
     loreSnippet: '"A blade that moves like an extension of your own hand. Silence is your shield, swiftness your armor."',
+    reviews: [
+      {
+        id: 'rev-1',
+        author: 'Arno Dorian',
+        rank: 'Master Assassin',
+        rating: 5,
+        date: '2026-09-18',
+        comment: 'The mechanical dual-action is smooth and lightning-fast. The leather bracer fits snugly on the forearm and Damascus steel edge is razor-sharp.',
+        verifiedBuyer: true
+      },
+      {
+        id: 'rev-2',
+        author: 'Kassandra of Sparta',
+        rank: 'Legendary Mercenary',
+        rating: 5,
+        date: '2026-08-30',
+        comment: 'Exquisite craftsmanship. The ring pull mechanism deployed reliably in high tension tests.',
+        verifiedBuyer: true
+      }
+    ],
     featured: true
   },
   {
     id: 'prod-master-cloak',
+    sku: 'SANCTUM-APP-002',
     name: 'Master Assassin Velvet & Wool Cloak',
     category: 'apparel',
     priceBDT: 12900,
@@ -44,13 +68,27 @@ export const INITIAL_PRODUCTS: Product[] = [
       dimensions: 'Full Length: 145 cm (Drop Hem)',
       weight: '1.4 kg',
       craftsmanship: 'Hand-loomed archival weave with weather-repellent finish',
-      rarity: 'Masterwork'
+      rarity: 'Masterwork',
+      serialPrefix: 'AC-LEV-1191',
+      warranty: 'Lifetime Seam & Brooch Guarantee'
     },
     loreSnippet: '"We work in the dark to serve the light. The cowl shields the gaze of kings and cutthroats alike."',
+    reviews: [
+      {
+        id: 'rev-3',
+        author: 'Ezio Auditore',
+        rank: 'Mentor',
+        rating: 5,
+        date: '2026-09-12',
+        comment: 'Magnificent heavy wool drape. The crimson silk interior feels majestic, and the hood silhouette completely masks facial contours in low light.',
+        verifiedBuyer: true
+      }
+    ],
     featured: true
   },
   {
     id: 'prod-apple-of-eden',
+    sku: 'SANCTUM-ISU-003',
     name: 'The Apple of Eden (First Civilization Relic)',
     category: 'relics',
     priceBDT: 18500,
@@ -67,13 +105,27 @@ export const INITIAL_PRODUCTS: Product[] = [
       dimensions: 'Diameter: 9.8 cm (Sphere)',
       weight: '1.1 kg',
       craftsmanship: 'Precision CNC engraved Isu script with micro-patina',
-      rarity: 'First Civilization Isu'
+      rarity: 'First Civilization Isu',
+      serialPrefix: 'ISU-EDEN-00',
+      warranty: '3-Year Circuit & Internal Pulse Array Warranty'
     },
     loreSnippet: '"Knowledge. Power. Submission. Those who hold the Apple perceive the strands of time itself."',
+    reviews: [
+      {
+        id: 'rev-4',
+        author: 'Desmond Miles',
+        rank: 'Master Assassin',
+        rating: 5,
+        date: '2026-09-24',
+        comment: 'The amber light pulse feels almost alive. The brass weight in hand is heavy and authentic.',
+        verifiedBuyer: true
+      }
+    ],
     featured: true
   },
   {
     id: 'prod-damascus-dagger',
+    sku: 'SANCTUM-BLD-004',
     name: 'Brotherhood Damascus Combat Dagger',
     category: 'blades',
     priceBDT: 6800,
@@ -90,13 +142,27 @@ export const INITIAL_PRODUCTS: Product[] = [
       dimensions: 'Blade: 26 cm / Total: 39 cm',
       weight: '520 g',
       craftsmanship: 'Oil quenched 58-60 HRC edge hardness',
-      rarity: 'Masterwork'
+      rarity: 'Masterwork',
+      serialPrefix: 'AC-SYR-1191',
+      warranty: 'Lifetime Damascus Steel Blade Warranty'
     },
     loreSnippet: '"When shadows tighten, the dagger whispers final peace to the corrupt."',
+    reviews: [
+      {
+        id: 'rev-5',
+        author: 'Altaïr Ibn-La\'Ahad',
+        rank: 'Mentor of Masyaf',
+        rating: 5,
+        date: '2026-08-14',
+        comment: 'Balanced at the hilt. The Damascus folding pattern is mesmerizing and holds an edge effortlessly.',
+        verifiedBuyer: true
+      }
+    ],
     featured: true
   },
   {
     id: 'prod-ottoman-hookblade',
+    sku: 'SANCTUM-ARM-005',
     name: 'Ottoman Hookblade & Combat Bracer',
     category: 'armor',
     priceBDT: 9200,
@@ -113,13 +179,27 @@ export const INITIAL_PRODUCTS: Product[] = [
       dimensions: 'Hook: 14 cm / Forearm: 30 cm',
       weight: '780 g',
       craftsmanship: 'Calibrated for traversal hook grip strength',
-      rarity: 'Legendary'
+      rarity: 'Legendary',
+      serialPrefix: 'AC-OTT-1511',
+      warranty: '2-Year Hook & Rivet Replacement'
     },
     loreSnippet: '"The hookblade has two parts: the hook and the blade. One to climb, one to conquer."',
+    reviews: [
+      {
+        id: 'rev-6',
+        author: 'Yusuf Tazim',
+        rank: 'Guild Leader',
+        rating: 5,
+        date: '2026-07-29',
+        comment: 'Constantinople approved! The hook mechanism handles tension with absolute stability.',
+        verifiedBuyer: true
+      }
+    ],
     featured: false
   },
   {
     id: 'prod-altair-sword',
+    sku: 'SANCTUM-BLD-006',
     name: "Altaïr's Master Longsword of Masyaf",
     category: 'blades',
     priceBDT: 14500,
@@ -136,13 +216,27 @@ export const INITIAL_PRODUCTS: Product[] = [
       dimensions: 'Blade: 84 cm / Total: 104 cm',
       weight: '1.25 kg',
       craftsmanship: 'Individually heat treated and battle-balanced',
-      rarity: 'Legendary'
+      rarity: 'Legendary',
+      serialPrefix: 'AC-MAS-1191',
+      warranty: 'Lifetime Tang & Steel Guarantee'
     },
     loreSnippet: '"He who lives by the blade must wield it with clarity of soul."',
+    reviews: [
+      {
+        id: 'rev-7',
+        author: 'Malik Al-Sayf',
+        rank: 'Bureau Leader',
+        rating: 5,
+        date: '2026-06-19',
+        comment: 'A true weapon of the Mentor. Weight balance is located 3 inches forward from the guard, perfect for swift parries.',
+        verifiedBuyer: true
+      }
+    ],
     featured: false
   },
   {
     id: 'prod-memory-codex',
+    sku: 'SANCTUM-REL-007',
     name: 'Memory Seal Codex of the Brotherhood',
     category: 'relics',
     priceBDT: 5400,
@@ -159,13 +253,27 @@ export const INITIAL_PRODUCTS: Product[] = [
       dimensions: '22 cm x 30 cm (240 Pages)',
       weight: '890 g',
       craftsmanship: 'Hand-sewn Coptic stitch binding with gilded edges',
-      rarity: 'Masterwork'
+      rarity: 'Masterwork',
+      serialPrefix: 'AC-COD-1200',
+      warranty: '1-Year Binding Warranty'
     },
     loreSnippet: '"Only a mind freed from dogma can decode the true nature of peace."',
+    reviews: [
+      {
+        id: 'rev-8',
+        author: 'Leonardo da Vinci',
+        rank: 'Guild Architect',
+        rating: 5,
+        date: '2026-05-11',
+        comment: 'Fascinating blueprints. The schematics for the hidden blade modification are accurate down to the smallest spring.',
+        verifiedBuyer: true
+      }
+    ],
     featured: false
   },
   {
     id: 'prod-caribbean-bracer',
+    sku: 'SANCTUM-ARM-008',
     name: 'Edward Kenway Buccaneer Gauntlet & Holster',
     category: 'armor',
     priceBDT: 7900,
@@ -182,9 +290,22 @@ export const INITIAL_PRODUCTS: Product[] = [
       dimensions: 'Adjustable Harness (Chest 36"-48")',
       weight: '950 g',
       craftsmanship: 'Hand-distressed sea-salt patina effect',
-      rarity: 'Masterwork'
+      rarity: 'Masterwork',
+      serialPrefix: 'AC-CAR-1715',
+      warranty: '2-Year Leather & Buckle Warranty'
     },
     loreSnippet: '"In a world without gold, we might have been heroes. But freedom has its own price."',
+    reviews: [
+      {
+        id: 'rev-9',
+        author: 'Adéwalé',
+        rank: 'Quartermaster',
+        rating: 5,
+        date: '2026-04-03',
+        comment: 'Rugged leather that can weather any Atlantic storm. Hardware holds firm under strain.',
+        verifiedBuyer: true
+      }
+    ],
     featured: false
   }
 ];
@@ -192,7 +313,14 @@ export const INITIAL_PRODUCTS: Product[] = [
 export const BKASH_CONFIG = {
   merchantNumber: '01712-889900',
   formattedNumber: '+880 1712-889900',
-  accountType: 'Merchant Gateway (Live)',
+  accountType: 'bKash Merchant Account (Live)',
   qrPlaceholder: 'bKash Merchant QR Scanner Ready',
   sampleTrxIds: ['9AB8X7K4J2', 'BK48L9M10Z', '8V73Q6P2K1', 'TRX992014B']
+};
+
+export const STORE_SUPPORT = {
+  phone: '+880 1712-889900',
+  whatsappUrl: 'https://wa.me/8801712889900?text=Sanctum%20Creed%20Armory%20Support%20Inquiry',
+  email: 'support@sanctumcreed.com',
+  hours: '24/7 Brotherhood Encrypted Hotline'
 };

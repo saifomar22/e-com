@@ -13,6 +13,8 @@ export const Header: React.FC = () => {
     setIsTrackingOpen,
     setIsDashboardOpen,
     setIsBkashGuideOpen,
+    setIsSupportOpen,
+    setIsAdminModalOpen,
     setSelectedCategory,
     setSearchQuery,
     profile
@@ -90,10 +92,32 @@ export const Header: React.FC = () => {
             <Compass className="w-3.5 h-3.5 text-red-400 animate-pulse" />
             Live Tracking
           </button>
+          <button
+            onClick={() => {
+              playAnimusSound('click');
+              setIsSupportOpen(true);
+            }}
+            className="hover:text-amber-400 transition-colors py-1 hover:underline underline-offset-4"
+          >
+            Support 24/7
+          </button>
         </nav>
 
         {/* Zone 3: 1-2 primary action clusters */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Merchant Admin Console Button */}
+          <button
+            onClick={() => {
+              playAnimusSound('blade');
+              setIsAdminModalOpen(true);
+            }}
+            title="Merchant & Smithy Administration Console"
+            className="hidden lg:flex items-center gap-1 px-2 py-1 text-xs font-mono font-medium rounded border border-amber-800/80 bg-amber-950/30 text-amber-400 hover:bg-amber-900/40 transition-colors"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
+            Admin
+          </button>
+
           {/* bKash Pay Quick Button */}
           <button
             onClick={() => {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useStore } from '../context/StoreContext';
 import { X, Heart, Shield, Plus, Minus, ShoppingBag, Zap, Check } from 'lucide-react';
 import { playAnimusSound } from '../utils/audio';
+import { ProductReviewsSection } from './ProductReviewsSection';
 
 export const ProductDetailModal: React.FC = () => {
   const {
@@ -119,6 +120,14 @@ export const ProductDetailModal: React.FC = () => {
                     <span className="text-stone-500 block text-[10px] uppercase font-mono">Weight</span>
                     <span className="text-stone-200 font-medium">{selectedProduct.specs.weight}</span>
                   </div>
+                  <div className="p-2 rounded bg-stone-900/60 border border-stone-800/60">
+                    <span className="text-stone-500 block text-[10px] uppercase font-mono">SKU / Serial</span>
+                    <span className="text-amber-400 font-mono text-[11px] font-medium">{selectedProduct.sku}</span>
+                  </div>
+                  <div className="p-2 rounded bg-stone-900/60 border border-stone-800/60">
+                    <span className="text-stone-500 block text-[10px] uppercase font-mono">Warranty</span>
+                    <span className="text-stone-200 font-medium text-[11px]">{selectedProduct.specs.warranty}</span>
+                  </div>
                 </div>
 
                 <div className="mt-2">
@@ -135,6 +144,9 @@ export const ProductDetailModal: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Customer Reviews Section */}
+              <ProductReviewsSection product={selectedProduct} />
             </div>
 
             {/* Purchase Action Section */}

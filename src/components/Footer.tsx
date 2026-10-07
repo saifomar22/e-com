@@ -9,6 +9,9 @@ export const Footer: React.FC = () => {
     setIsBkashGuideOpen,
     setIsHostingGuideOpen,
     setIsDashboardOpen,
+    setIsSupportOpen,
+    setIsAdminModalOpen,
+    setActivePolicyModal,
     setSelectedCategory
   } = useStore();
 
@@ -17,6 +20,11 @@ export const Footer: React.FC = () => {
     setSelectedCategory(cat as any);
     const el = document.getElementById('catalog-section');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handlePolicy = (pol: 'terms' | 'shipping' | 'refund' | 'privacy') => {
+    playAnimusSound('click');
+    setActivePolicyModal(pol);
   };
 
   return (
@@ -120,21 +128,41 @@ export const Footer: React.FC = () => {
         {/* Free Hosting & Deployment */}
         <div className="space-y-2 text-xs">
           <h4 className="font-display font-semibold text-stone-200 uppercase tracking-wider">
-            Hosting & Deployment
+            Commercial Policies
           </h4>
-          <p className="text-[11px] text-stone-500">
-            Ready for zero-cost deployment on Vercel, Netlify, Render, or Google Cloud Run.
-          </p>
-          <button
-            onClick={() => {
-              playAnimusSound('click');
-              setIsHostingGuideOpen(true);
-            }}
-            className="mt-1 px-3 py-1.5 rounded bg-stone-900 hover:bg-stone-800 border border-stone-800 text-stone-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
-          >
-            <Globe className="w-3.5 h-3.5 text-amber-400" />
-            <span>Free Hosting Guide & Link</span>
-          </button>
+          <ul className="space-y-1.5 text-stone-400">
+            <li>
+              <button onClick={() => handlePolicy('terms')} className="hover:text-amber-400 transition-colors">
+                Terms of Service & Regulations
+              </button>
+            </li>
+            <li>
+              <button onClick={() => handlePolicy('shipping')} className="hover:text-amber-400 transition-colors">
+                Nationwide 64-District Shipping
+              </button>
+            </li>
+            <li>
+              <button onClick={() => handlePolicy('refund')} className="hover:text-amber-400 transition-colors">
+                7-Day Return & Damascus Warranty
+              </button>
+            </li>
+            <li>
+              <button onClick={() => handlePolicy('privacy')} className="hover:text-amber-400 transition-colors">
+                Sanctuary Privacy Policy
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => {
+                  playAnimusSound('blade');
+                  setIsAdminModalOpen(true);
+                }}
+                className="text-amber-400 hover:underline flex items-center gap-1 font-mono pt-1"
+              >
+                <span>Merchant Admin Console →</span>
+              </button>
+            </li>
+          </ul>
         </div>
 
       </div>

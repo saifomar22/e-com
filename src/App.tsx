@@ -11,6 +11,9 @@ import { CustomerDashboard } from './components/CustomerDashboard';
 import { InvoiceModal } from './components/InvoiceModal';
 import { BkashInfoModal } from './components/BkashInfoModal';
 import { FreeHostingGuideModal } from './components/FreeHostingGuideModal';
+import { AdminPanelModal } from './components/AdminPanelModal';
+import { CommercialPoliciesModal } from './components/CommercialPoliciesModal';
+import { SupportDrawer } from './components/SupportDrawer';
 import { Toast } from './components/Toast';
 import { Footer } from './components/Footer';
 import { Shield, Sparkles, Smartphone, Compass, Flame } from 'lucide-react';
@@ -153,6 +156,9 @@ function StorefrontContent() {
       <InvoiceModal />
       <BkashInfoModal />
       <FreeHostingGuideModal />
+      <AdminPanelModal />
+      <CommercialPoliciesModal />
+      <SupportDrawer />
 
       {/* Toast Notification Layer */}
       <Toast />

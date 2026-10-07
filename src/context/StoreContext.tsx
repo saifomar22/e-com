@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Product, CartItem, Order, CustomerProfile, ProductCategory, OrderStatus } from '../types';
+import { Product, CartItem, Order, CustomerProfile, ProductCategory, OrderStatus, Review, PolicyType } from '../types';
 import { INITIAL_PRODUCTS } from '../data/products';
 import { playAnimusSound } from '../utils/audio';
 
@@ -14,14 +14,21 @@ interface StoreContextType {
   searchQuery: string;
   selectedProduct: Product | null;
   activeTrackingId: string;
+  // Modals & Drawers
   isCartOpen: boolean;
   isCheckoutOpen: boolean;
   isTrackingOpen: boolean;
   isDashboardOpen: boolean;
   isBkashGuideOpen: boolean;
   isHostingGuideOpen: boolean;
+  isSupportOpen: boolean;
+  isAdminModalOpen: boolean;
+  activePolicyModal: PolicyType | null;
   invoiceOrder: Order | null;
   toast: { message: string; type: 'success' | 'info' | 'warn' } | null;
+  // Admin Mode
+  isAdminMode: boolean;
+  toggleAdminMode: () => void;
   // Actions
   setCurrency: (c: 'BDT' | 'USD') => void;
   setSelectedCategory: (c: ProductCategory) => void;
@@ -33,6 +40,9 @@ interface StoreContextType {
   setIsDashboardOpen: (open: boolean) => void;
   setIsBkashGuideOpen: (open: boolean) => void;
   setIsHostingGuideOpen: (open: boolean) => void;
+  setIsSupportOpen: (open: boolean) => void;
+  setIsAdminModalOpen: (open: boolean) => void;
+  setActivePolicyModal: (p: PolicyType | null) => void;
   setInvoiceOrder: (o: Order | null) => void;
   setActiveTrackingId: (id: string) => void;
   addToCart: (product: Product, quantity?: number) => void;
@@ -42,11 +52,17 @@ interface StoreContextType {
   toggleWishlist: (productId: string) => void;
   createOrder: (orderData: Omit<Order, 'id' | 'createdAt' | 'status' | 'trackingHistory' | 'courier' | 'estimatedDelivery'>) => Order;
   updateOrderStatus: (orderId: string, status: OrderStatus) => void;
+  verifyOrderPayment: (orderId: string) => void;
+  updateCourierLocation: (orderId: string, district: string, eta: number, coords: { x: number; y: number }) => void;
+  deleteOrder: (orderId: string) => void;
+  updateProductStock: (productId: string, deltaOrSet: number, isSet?: boolean) => void;
+  addReview: (productId: string, review: Omit<Review, 'id' | 'date'>) => void;
   updateProfile: (profile: Partial<CustomerProfile>) => void;
   showToast: (message: string, type?: 'success' | 'info' | 'warn') => void;
   formatPrice: (amountBDT: number) => string;
   cartTotalBDT: number;
   cartCount: number;
+  totalRevenueBDT: number;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -196,7 +212,15 @@ const SEED_ORDERS: Order[] = [
 ];
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [products] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>(() => {
+    try {
+      const saved = localStorage.getItem('creed_products_commercial');
+      return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
+    } catch {
+      return INITIAL_PRODUCTS;
+    }
+  });
+
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('creed_cart');
@@ -266,10 +290,20 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [isBkashGuideOpen, setIsBkashGuideOpen] = useState(false);
   const [isHostingGuideOpen, setIsHostingGuideOpen] = useState(false);
+  const [isSupportOpen, setIsSupportOpen] = useState(false);
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [activePolicyModal, setActivePolicyModal] = useState<PolicyType | null>(null);
   const [invoiceOrder, setInvoiceOrder] = useState<Order | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' | 'warn' } | null>(null);
 
+  // Admin Mode
+  const [isAdminMode, setIsAdminMode] = useState(false);
+
   // Sync state to localStorage
+  useEffect(() => {
+    localStorage.setItem('creed_products_commercial', JSON.stringify(products));
+  }, [products]);
+
   useEffect(() => {
     localStorage.setItem('creed_cart', JSON.stringify(cart));
   }, [cart]);
@@ -293,7 +327,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, 3500);
   };
 
+  const toggleAdminMode = () => {
+    playAnimusSound('blade');
+    setIsAdminMode(prev => !prev);
+    showToast(isAdminMode ? 'Customer Storefront Mode Active' : 'Master Smith Merchant Admin Mode Active', 'info');
+  };
+
   const addToCart = (product: Product, quantity = 1) => {
+    if (product.stockCount <= 0) {
+      showToast(`"${product.name}" is currently out of stock in the forge.`, 'warn');
+      return;
+    }
     playAnimusSound('blade');
     setCart(prev => {
       const existing = prev.find(item => item.product.id === product.id);
@@ -344,12 +388,66 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
   };
 
+  const updateProductStock = (productId: string, deltaOrSet: number, isSet = false) => {
+    setProducts(prev =>
+      prev.map(p => {
+        if (p.id !== productId) return p;
+        const newCount = isSet ? deltaOrSet : Math.max(0, p.stockCount + deltaOrSet);
+        return {
+          ...p,
+          stockCount: newCount,
+          inStock: newCount > 0
+        };
+      })
+    );
+  };
+
+  const addReview = (productId: string, newRev: Omit<Review, 'id' | 'date'>) => {
+    const revWithMeta: Review = {
+      ...newRev,
+      id: `rev-${Date.now()}`,
+      date: new Date().toISOString().split('T')[0]
+    };
+
+    setProducts(prev =>
+      prev.map(p => {
+        if (p.id !== productId) return p;
+        const updatedReviews = [revWithMeta, ...(p.reviews || [])];
+        const newTotalScore = updatedReviews.reduce((sum, r) => sum + r.rating, 0);
+        const newRating = Number((newTotalScore / updatedReviews.length).toFixed(2));
+        return {
+          ...p,
+          reviews: updatedReviews,
+          reviewsCount: updatedReviews.length,
+          rating: newRating
+        };
+      })
+    );
+
+    // If active product modal is open, sync it
+    if (selectedProduct && selectedProduct.id === productId) {
+      setSelectedProduct(prev => prev ? {
+        ...prev,
+        reviews: [revWithMeta, ...(prev.reviews || [])],
+        reviewsCount: (prev.reviewsCount || 0) + 1
+      } : null);
+    }
+
+    playAnimusSound('sync');
+    showToast('Brotherhood review submitted and verified!', 'success');
+  };
+
   const createOrder = (orderData: Omit<Order, 'id' | 'createdAt' | 'status' | 'trackingHistory' | 'courier' | 'estimatedDelivery'>): Order => {
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     const orderId = `CREED-${randomNum}`;
     const now = new Date();
     const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
     const dateStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+
+    // Decrement stock for ordered items
+    orderData.items.forEach(it => {
+      updateProductStock(it.product.id, -it.quantity);
+    });
 
     const newOrder: Order = {
       ...orderData,
@@ -417,7 +515,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       prev.map(ord => {
         if (ord.id !== orderId) return ord;
         
-        // update history checkpoint
         const updatedHistory = ord.trackingHistory.map(chk => {
           if (chk.status === newStatus) {
             return { ...chk, completed: true, timestamp: 'Just Now' };
@@ -425,7 +522,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           return chk;
         });
 
-        // if courier is updated, move coords
         let coords = ord.courier.coords;
         let district = ord.courier.currentDistrict;
         let eta = ord.courier.etaMinutes;
@@ -461,7 +557,49 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         };
       })
     );
-    showToast(`Order ${orderId} status advanced to: ${newStatus.replace('_', ' ').toUpperCase()}`);
+    showToast(`Order ${orderId} status set to: ${newStatus.replace(/_/g, ' ').toUpperCase()}`);
+  };
+
+  const verifyOrderPayment = (orderId: string) => {
+    setOrders(prev =>
+      prev.map(ord => {
+        if (ord.id !== orderId) return ord;
+        return {
+          ...ord,
+          status: 'payment_confirmed',
+          payment: {
+            ...ord.payment,
+            isVerified: true,
+            verifiedAt: new Date().toISOString().replace('T', ' ').slice(0, 16)
+          }
+        };
+      })
+    );
+    playAnimusSound('success');
+    showToast(`Order ${orderId} bKash Payment Approved by Master Smith!`);
+  };
+
+  const updateCourierLocation = (orderId: string, district: string, eta: number, coords: { x: number; y: number }) => {
+    setOrders(prev =>
+      prev.map(ord => {
+        if (ord.id !== orderId) return ord;
+        return {
+          ...ord,
+          courier: {
+            ...ord.courier,
+            currentDistrict: district,
+            etaMinutes: eta,
+            coords
+          }
+        };
+      })
+    );
+    showToast(`Courier GPS Telemetry Updated: ${district} (${eta}m ETA)`);
+  };
+
+  const deleteOrder = (orderId: string) => {
+    setOrders(prev => prev.filter(o => o.id !== orderId));
+    showToast(`Order ${orderId} purged from ledger.`, 'info');
   };
 
   const updateProfile = (updated: Partial<CustomerProfile>) => {
@@ -479,6 +617,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const cartTotalBDT = cart.reduce((acc, item) => acc + item.product.priceBDT * item.quantity, 0);
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const totalRevenueBDT = orders.reduce((sum, ord) => sum + (ord.status !== 'cancelled' ? ord.totalBDT : 0), 0);
 
   return (
     <StoreContext.Provider
@@ -499,8 +638,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         isDashboardOpen,
         isBkashGuideOpen,
         isHostingGuideOpen,
+        isSupportOpen,
+        isAdminModalOpen,
+        activePolicyModal,
         invoiceOrder,
         toast,
+        isAdminMode,
+        toggleAdminMode,
         setCurrency,
         setSelectedCategory,
         setSearchQuery,
@@ -511,6 +655,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setIsDashboardOpen,
         setIsBkashGuideOpen,
         setIsHostingGuideOpen,
+        setIsSupportOpen,
+        setIsAdminModalOpen,
+        setActivePolicyModal,
         setInvoiceOrder,
         setActiveTrackingId,
         addToCart,
@@ -520,11 +667,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         toggleWishlist,
         createOrder,
         updateOrderStatus,
+        verifyOrderPayment,
+        updateCourierLocation,
+        deleteOrder,
+        updateProductStock,
+        addReview,
         updateProfile,
         showToast,
         formatPrice,
         cartTotalBDT,
-        cartCount
+        cartCount,
+        totalRevenueBDT
       }}
     >
       {children}

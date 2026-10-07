@@ -1,7 +1,18 @@
 export type ProductCategory = 'all' | 'blades' | 'apparel' | 'relics' | 'armor';
 
+export interface Review {
+  id: string;
+  author: string;
+  rank: string;
+  rating: number;
+  date: string;
+  comment: string;
+  verifiedBuyer: boolean;
+}
+
 export interface Product {
   id: string;
+  sku: string;
   name: string;
   category: ProductCategory;
   priceBDT: number;
@@ -19,8 +30,11 @@ export interface Product {
     weight: string;
     craftsmanship: string;
     rarity: 'Common' | 'Masterwork' | 'Legendary' | 'First Civilization Isu';
+    serialPrefix: string;
+    warranty: string;
   };
   loreSnippet: string;
+  reviews: Review[];
   featured?: boolean;
 }
 
@@ -37,7 +51,8 @@ export type OrderStatus =
   | 'forging_armory'
   | 'courier_dispatched'
   | 'out_for_delivery'
-  | 'delivered';
+  | 'delivered'
+  | 'cancelled';
 
 export interface TrackingCheckpoint {
   id: string;
@@ -82,7 +97,7 @@ export interface Order {
     phone: string;
     currentDistrict: string;
     etaMinutes: number;
-    coords: { x: number; y: number }; // Percentage 0-100 on map
+    coords: { x: number; y: number };
   };
 }
 
@@ -97,3 +112,5 @@ export interface CustomerProfile {
   safehouseCity: string;
   joinedDate: string;
 }
+
+export type PolicyType = 'terms' | 'shipping' | 'refund' | 'privacy';
